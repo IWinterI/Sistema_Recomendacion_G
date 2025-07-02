@@ -5,7 +5,7 @@
 #include <iostream>
 #include <iomanip>
 
-// --- Definiciones de Estructuras de Datos ---
+
 
 struct Producto
 {
@@ -87,6 +87,7 @@ struct Nodoarbol
 
 struct Recomendaciones
 {
+    void limitarRecomendaciones(int maxPorSeccion = 10);
     ListaProducto porMarcasPreferidas = nullptr;
     ListaProducto porOtrasMarcasFrecuentes = nullptr;
     ListaProducto porCategoriaPreferida = nullptr;

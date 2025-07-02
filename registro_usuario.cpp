@@ -121,7 +121,7 @@ void Registro_Usuario::on_buttonBox_accepted()
                                             "Usuario: " + usuario + "\n"
                                              "ID: " + QString::fromStdString(nuevo.id));
 
-    // Cerrar ventana
+
     this->close();
 
     MainWindow *ventanaP = new MainWindow();

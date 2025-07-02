@@ -37,7 +37,44 @@
 
 #Volver:hover{
 	
-	background-color: rgb(85, 255, 255);
+	background-color: rgb(169, 255, 242);
+}
+
+#pushButton{
+	border: 2px solid rgb(65, 195, 195);
+	border-radius:10px;
+	background-color: rgb(255, 255, 255);
+}
+
+#pushButton:hover{
+	background-color: rgb(169, 255, 242);
+}
+
+
+
+#frame{
+	border:1px solid #42c7c7;
+	border-radius:10px;
+	background-color: rgb(255, 255, 255);
+}
+
+#lineEdit{
+	border-top: 1px solid #42c7c7;
+	border-right: 1px solid #42c7c7;
+	border-bottom: 1px solid #42c7c7;
+}
+
+QListWidget{
+	background-color: #f8f8f8;
+}
+
+QListWidget::item { 
+	border-bottom: 1px solid #e0e0e0;
+	padding: 8px; 
+}
+
+QListWidget::item:selected { 
+	background-color: #e0f0ff; 
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -204,26 +241,13 @@
        <height>141</height>
       </rect>
      </property>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>41</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Buscar:</string>
-      </property>
-     </widget>
      <widget class="QLineEdit" name="lineEdit">
       <property name="geometry">
        <rect>
-        <x>50</x>
+        <x>70</x>
         <y>10</y>
         <width>113</width>
-        <height>22</height>
+        <height>21</height>
        </rect>
       </property>
      </widget>
@@ -235,6 +259,12 @@
         <width>111</width>
         <height>22</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <bold>false</bold>
+       </font>
       </property>
       <property name="currentText">
        <string/>
@@ -286,6 +316,12 @@
         <width>100</width>
         <height>22</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <bold>false</bold>
+       </font>
       </property>
       <property name="placeholderText">
        <string>Marca</string>
@@ -354,6 +390,11 @@
         <width>91</width>
         <height>22</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+       </font>
       </property>
       <property name="placeholderText">
        <string>Precio min</string>
@@ -486,6 +527,11 @@
         <height>22</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+       </font>
+      </property>
       <property name="placeholderText">
        <string>Precio Max</string>
       </property>
@@ -595,6 +641,48 @@
        </property>
       </item>
      </widget>
+     <widget class="QFrame" name="frame">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Shadow::Raised</enum>
+      </property>
+      <widget class="QLabel" name="label_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>51</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Buscar:</string>
+       </property>
+      </widget>
+     </widget>
+     <zorder>frame</zorder>
+     <zorder>lineEdit</zorder>
+     <zorder>comboBox</zorder>
+     <zorder>comboBox_2</zorder>
+     <zorder>comboBox_3</zorder>
+     <zorder>pushButton</zorder>
+     <zorder>comboBox_4</zorder>
     </widget>
     <zorder>Capa2</zorder>
     <zorder>Carpeta</zorder>

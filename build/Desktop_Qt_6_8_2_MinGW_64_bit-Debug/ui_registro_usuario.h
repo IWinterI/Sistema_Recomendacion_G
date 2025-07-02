@@ -148,7 +148,7 @@ public:
         RContras->setObjectName("RContras");
         RContras->setGeometry(QRect(10, 180, 121, 22));
         RContras->setMaxLength(30);
-        RContras->setEchoMode(QLineEdit::EchoMode::Password);
+        RContras->setEchoMode(QLineEdit::EchoMode::Normal);
         label_6 = new QLabel(Capa1);
         label_6->setObjectName("label_6");
         label_6->setGeometry(QRect(280, 10, 271, 16));
@@ -231,7 +231,7 @@ public:
 
     void retranslateUi(QDialog *Registro_Usuario)
     {
-        Registro_Usuario->setWindowTitle(QCoreApplication::translate("Registro_Usuario", "Dialog", nullptr));
+        Registro_Usuario->setWindowTitle(QCoreApplication::translate("Registro_Usuario", "Registro Usuario", nullptr));
         label->setText(QCoreApplication::translate("Registro_Usuario", "Sistema de registro de usuario", nullptr));
         RNombre->setPlaceholderText(QCoreApplication::translate("Registro_Usuario", "Solo letras y espacios", nullptr));
         label_2->setText(QCoreApplication::translate("Registro_Usuario", "Nombre:", nullptr));
@@ -242,7 +242,7 @@ public:
         label_5->setText(QCoreApplication::translate("Registro_Usuario", "Contrase\303\261a:", nullptr));
         RContras->setPlaceholderText(QCoreApplication::translate("Registro_Usuario", "M\303\255nimo 8 caracteres", nullptr));
         label_6->setText(QCoreApplication::translate("Registro_Usuario", "Seleccione marcas de su preferencia:", nullptr));
-        brandsGroup->setTitle(QCoreApplication::translate("Registro_Usuario", "GroupBox", nullptr));
+        brandsGroup->setTitle(QString());
         checkBox->setText(QCoreApplication::translate("Registro_Usuario", "Zara", nullptr));
         checkBox_3->setText(QCoreApplication::translate("Registro_Usuario", "Maybelline", nullptr));
         checkBox_5->setText(QCoreApplication::translate("Registro_Usuario", "HyM", nullptr));

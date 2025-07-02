@@ -98,10 +98,10 @@ void MainWindow::on_ingresar_clicked()
     Nodoarbol* usuarioNodo = buscar(Usuarios, username.toStdString());
 
     if (usuarioNodo && verificarPassword(usuarioNodo, password.toStdString())) {
-        // Login exitoso
+
         QMessageBox::information(this, "Éxito", "Inicio de sesión exitoso");
 
-        // Abrir ventana de productos con el usuario
+
         Ventana_Productos *ventanaProductos = new Ventana_Productos(&usuarioNodo->dato);
         ventanaProductos->show();
         this->close();

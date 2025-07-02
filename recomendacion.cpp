@@ -1,9 +1,11 @@
 #include "recomendacion.h"
 #include "utilidades.h"
 #include "catalogo.h"
-#include <algorithm> // Para std::min
+#include <algorithm>
+#include <vector>
+#include <unordered_map>
 
-// Función auxiliar para ordenar un mapa y obtener los N mejores elementos
+
 ListaString obtenerTopN(MapaStringInt mapa, int n) {
     ListaString resultado = nullptr;
     int longitud = 0;
@@ -108,7 +110,6 @@ void actualizarPreferenciasDinamicas(Usuario *usuario)
         actualHistorial = actualHistorial->siguiente;
     }
 
-    // Limpiar preferencias de categorías anteriores para recalcular
     while (usuario->categoriasPreferidas != nullptr)
     {
         Nodolista* temp = usuario->categoriasPreferidas;
@@ -136,6 +137,83 @@ void actualizarPreferenciasDinamicas(Usuario *usuario)
     }
 }
 
+void ordenarPorRelevancia(ListaProducto& lista, Usuario* usuario)
+{
+    if (!lista || !usuario) return;
+
+
+    std::unordered_map<int, int> frecuencias;
+    Nodolista* hist = usuario->historial;
+    while (hist) {
+        try {
+            int id = std::stoi(hist->dato);
+            frecuencias[id]++;
+        } catch (...) {}
+        hist = hist->siguiente;
+    }
+
+
+    std::vector<std::pair<int, Producto>> productos;
+    NodoProducto* actual = lista;
+    while (actual) {
+        int frecuencia = frecuencias.count(actual->dato.id) ? frecuencias[actual->dato.id] : 0;
+        productos.push_back({frecuencia, actual->dato});
+        actual = actual->siguiente;
+    }
+
+
+    std::sort(productos.begin(), productos.end(),
+              [](const auto& a, const auto& b) {
+                  return a.first > b.first; // Mayor frecuencia primero
+              });
+
+
+    while (lista) {
+        NodoProducto* temp = lista;
+        lista = lista->siguiente;
+        delete temp;
+    }
+
+    lista = nullptr;
+    for (const auto& [freq, producto] : productos) {
+        insertarEnLista(lista, producto);
+    }
+}
+
+void Recomendaciones::limitarRecomendaciones(int maxPorSeccion)
+{
+    auto limitarLista = [&](ListaProducto& lista) {
+        if (!lista) return;
+
+
+        std::vector<Producto> productos;
+        NodoProducto* actual = lista;
+        while (actual) {
+            productos.push_back(actual->dato);
+            actual = actual->siguiente;
+        }
+
+
+        while (lista) {
+            NodoProducto* temp = lista;
+            lista = lista->siguiente;
+            delete temp;
+        }
+
+
+        int limit = std::min(static_cast<int>(productos.size()), maxPorSeccion);
+        for (int i = 0; i < limit; i++) {
+            insertarEnLista(lista, productos[i]);
+        }
+    };
+
+    limitarLista(porMarcasPreferidas);
+    limitarLista(porOtrasMarcasFrecuentes);
+    limitarLista(porCategoriaPreferida);
+    limitarLista(porCategoriaFrecuente);
+    limitarLista(porCalidad);
+}
+
 Recomendaciones generarRecomendaciones(Usuario *usuario)
 {
     actualizarPreferenciasDinamicas(usuario);
@@ -154,7 +232,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
             }
             catch (...)
             {
-                // Ignorar conversiones fallidas
+
             }
             actual = actual->siguiente;
         }
@@ -164,7 +242,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
     agregarIDs(usuario->carrito);
     agregarIDs(usuario->listaDeseos);
 
-    // Función para filtrar productos no vistos
+
     auto filtrarNoVistos = [&](ListaProducto lista) {
         ListaProducto resultado = nullptr;
         NodoProducto* actual = lista;
@@ -177,7 +255,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
         return resultado;
     };
 
-    // Recomendación por marcas preferidas
+
     if (usuario->preferencias != nullptr)
     {
         ListaProducto candidatos = nullptr;
@@ -201,7 +279,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
 
     EstadisticasUsuario stats = obtenerEstadisticasUsuario(usuario);
 
-    // Recomendación por otras marcas frecuentes
+
     if (stats.marcasFrecuentes != nullptr)
     {
         ListaProducto candidatos = nullptr;
@@ -226,7 +304,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
         rec.porOtrasMarcasFrecuentes = filtrarNoVistos(candidatos);
     }
 
-    // Recomendación por categorías frecuentes
+
     if (stats.categoriasFrecuentes != nullptr)
     {
         ListaProducto candidatos = nullptr;
@@ -248,7 +326,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
         rec.porCategoriaFrecuente = filtrarNoVistos(candidatos);
     }
 
-    // Recomendación por categorías preferidas
+
     if (usuario->categoriasPreferidas != nullptr)
     {
         ListaProducto candidatos = nullptr;
@@ -270,7 +348,7 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
         rec.porCategoriaPreferida = filtrarNoVistos(candidatos);
     }
 
-    // Recomendación por calidad similar
+
     if (stats.calidadFrecuente > 0)
     {
         ListaProducto candidatos = nullptr;
@@ -286,6 +364,8 @@ Recomendaciones generarRecomendaciones(Usuario *usuario)
         barajarLista(candidatos);
         rec.porCalidad = filtrarNoVistos(candidatos);
     }
+
+    rec.limitarRecomendaciones(10);
 
     return rec;
 }

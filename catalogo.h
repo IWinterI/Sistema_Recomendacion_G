@@ -2,7 +2,7 @@
 
 #include "estructuras.h"
 
-// --- Declaraciones de Funciones de Catálogo ---
+
 
 void inicializarCatalogo();
 ListaProducto buscarPorCategoria(ListaProducto productos, const std::string &categoriaBuscada);

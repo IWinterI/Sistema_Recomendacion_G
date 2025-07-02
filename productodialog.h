@@ -16,6 +16,9 @@ public:
     explicit productodialog(const Producto& producto, QWidget *parent = nullptr);
     ~productodialog();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::productodialog *ui;
 };

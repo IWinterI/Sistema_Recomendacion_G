@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Registro Usuario</string>
   </property>
   <property name="styleSheet">
    <string notr="true">#Capa0{
@@ -243,7 +243,7 @@
      <number>30</number>
     </property>
     <property name="echoMode">
-     <enum>QLineEdit::EchoMode::Password</enum>
+     <enum>QLineEdit::EchoMode::Normal</enum>
     </property>
     <property name="placeholderText">
      <string>Mínimo 8 caracteres</string>
@@ -329,7 +329,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string/>
     </property>
     <widget class="QCheckBox" name="checkBox">
      <property name="geometry">

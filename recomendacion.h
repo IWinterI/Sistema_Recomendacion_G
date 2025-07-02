@@ -2,7 +2,7 @@
 
 #include "estructuras.h"
 
-// --- Declaraciones de Funciones de Recomendación ---
+
 
 struct EstadisticasUsuario
 {
@@ -15,3 +15,4 @@ Recomendaciones generarRecomendaciones(Usuario *usuario);
 EstadisticasUsuario obtenerEstadisticasUsuario(Usuario *usuario);
 void actualizarPreferenciasDinamicas(Usuario *usuario);
 ListaString obtenerTopN(MapaStringInt mapa, int n);
+void ordenarPorRelevancia(ListaProducto& lista, Usuario* usuario);

@@ -15,6 +15,7 @@ class Ventana_Productos : public QMainWindow
 public:
     explicit Ventana_Productos(Usuario* usuario = nullptr, QWidget *parent = nullptr);
     ~Ventana_Productos();
+    void llenarFiltros();
 
 private slots:
     void on_Volver_clicked();

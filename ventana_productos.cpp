@@ -6,7 +6,15 @@
 #include "productodialog.h"
 #include <QListWidgetItem>
 #include <QStringList>
-#include <QDebug> // Para depuración
+#include <QDebug>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QIcon>
+#include <QFont>
+#include <QBrush>
+#include <QColor>
+#include <vector>
+#include <algorithm>
 
 extern ListaProducto catalogoGlobal;
 
@@ -15,18 +23,57 @@ Ventana_Productos::Ventana_Productos(Usuario* usuario, QWidget *parent)
 {
     ui->setupUi(this);
 
-    // Depuración: Verificar si catalogoGlobal está inicializado
-    qDebug() << "Inicializando Ventana_Productos...";
-    qDebug() << "Usuario:" << (usuario ? QString::fromStdString(usuario->usuario) : "null");
+    ui->listWidget_3->setStyleSheet(
+        "QListWidget { background-color: #f8f8f8; }"
+        "QListWidget::item { border-bottom: 1px solid #e0e0e0; padding: 8px; }"
+        "QListWidget::item:selected { background-color: #e0f0ff; }"
+        );
 
-    // Verificar catálogo
-    int contadorCatalogo = 0;
-    NodoProducto* temp = catalogoGlobal;
-    while (temp) {
-        contadorCatalogo++;
-        temp = temp->siguiente;
-    }
-    qDebug() << "Productos en catalogoGlobal:" << contadorCatalogo;
+    ui->listWidget->setStyleSheet(
+        "QListWidget { background-color: #f8f8f8; }"
+        "QListWidget::item { border-bottom: 1px solid #e0e0e0; padding: 8px; }"
+        "QListWidget::item:selected { background-color: #e0f0ff; }"
+        );
+
+    ui->listWidget_2->setStyleSheet(
+        "QListWidget { background-color: #f8f8f8; }"
+        "QListWidget::item { border-bottom: 1px solid #e0e0e0; padding: 8px; }"
+        "QListWidget::item:selected { background-color: #e0f0ff; }"
+        );
+
+
+    connect(ui->listWidget_3, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
+        if (item->flags() & Qt::ItemIsSelectable) { // Solo si es seleccionable (no encabezado)
+            int id = item->data(Qt::UserRole).toInt();
+            mostrarDetallesProducto(id);
+        }
+    });
+
+    connect(ui->listWidget, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
+        if (item->flags() & Qt::ItemIsSelectable) {
+            int id = item->data(Qt::UserRole).toInt();
+            mostrarDetallesProducto(id);
+        }
+    });
+
+    connect(ui->listWidget_2, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
+        int id = item->data(Qt::UserRole).toInt();
+        mostrarDetallesProducto(id);
+    });
+
+
+    connect(ui->pushButton, &QPushButton::clicked, this, &Ventana_Productos::on_pushButton_clicked);
+
+
+    llenarFiltros();
+
+
+    cargarProductosPorCategoria("Todas las categorías");
+    cargarRecomendaciones();
+}
+
+void Ventana_Productos::llenarFiltros()
+{
 
     ui->comboBox->clear();
     ui->comboBox->addItem("Categorias");
@@ -40,7 +87,7 @@ Ventana_Productos::Ventana_Productos(Usuario* usuario, QWidget *parent)
         ui->comboBox->addItem(categoria);
     }
 
-    // Llenar combobox de marcas
+
     ui->comboBox_2->clear();
     ui->comboBox_2->addItem("Marca");
     NodoProducto* actualMarca = catalogoGlobal;
@@ -53,7 +100,6 @@ Ventana_Productos::Ventana_Productos(Usuario* usuario, QWidget *parent)
         ui->comboBox_2->addItem(marca);
     }
 
-    // Llenar comboboxes de precios
     QStringList precios = {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100",
                            "110", "120", "130", "140", "150", "160", "170", "180", "190", "200"};
 
@@ -68,172 +114,140 @@ Ventana_Productos::Ventana_Productos(Usuario* usuario, QWidget *parent)
     for (const QString& precio : precios) {
         ui->comboBox_4->addItem(precio + "$");
     }
-
-
-    // Configurar conexiones
-    connect(ui->listWidget_3, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
-        int id = item->data(Qt::UserRole).toInt();
-        mostrarDetallesProducto(id);
-    });
-
-    connect(ui->listWidget, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
-        int id = item->data(Qt::UserRole).toInt();
-        mostrarDetallesProducto(id);
-    });
-
-    connect(ui->pushButton, &QPushButton::clicked, this, &Ventana_Productos::on_pushButton_clicked);
-
-    // Conectar la lista de resultados de búsqueda
-    connect(ui->listWidget_2, &QListWidget::itemClicked, [this](QListWidgetItem* item) {
-        int id = item->data(Qt::UserRole).toInt();
-        mostrarDetallesProducto(id);
-    });
-
-    // Cargar datos iniciales
-    cargarCategorias();
-    cargarProductosPorCategoria("Todas las categorías");
-    cargarRecomendaciones();
 }
 
-void Ventana_Productos::cargarCategorias()
-{
-    qDebug() << "Cargando categorías...";
-
-
-    // Obtener categorías únicas
-    NodoProducto* actual = catalogoGlobal;
-    QSet<QString> categoriasSet;
-    int contador = 0;
-
-    while (actual != nullptr) {
-        QString categoria = QString::fromStdString(actual->dato.categoria);
-        categoriasSet.insert(categoria);
-        actual = actual->siguiente;
-        contador++;
-    }
-
-    qDebug() << "Categorías encontradas:" << categoriasSet.size() << "de" << contador << "productos";
-
-
-}
 
 void Ventana_Productos::on_categoriaComboBox_currentIndexChanged(const QString &categoria)
 {
-    qDebug() << "Categoría seleccionada:" << categoria;
     cargarProductosPorCategoria(categoria);
 }
 
-void Ventana_Productos::cargarProductosPorCategoria(const QString& categoria)
+void Ventana_Productos::cargarProductosPorCategoria(const QString& categoriaFiltro)
 {
-    qDebug() << "Cargando productos para categoría:" << categoria;
     ui->listWidget_3->clear();
 
-    int productosCargados = 0;
+
+    QMap<QString, QList<Producto>> productosPorCategoria;
+
     NodoProducto* actual = catalogoGlobal;
-
     while (actual != nullptr) {
-        QString catProducto = QString::fromStdString(actual->dato.categoria);
+        QString categoria = QString::fromStdString(actual->dato.categoria);
 
-        if (categoria == "Todas las categorías" || catProducto == categoria) {
-            Producto p = actual->dato;
-            QString itemText = QString("%1 - %2 - $%3")
-                                   .arg(QString::fromStdString(p.descripcion))
-                                   .arg(QString::fromStdString(p.marca))
-                                   .arg(p.precio);
-
-            QListWidgetItem* item = new QListWidgetItem(itemText);
-            item->setData(Qt::UserRole, p.id);
-            ui->listWidget_3->addItem(item);
-
-            productosCargados++;
-            qDebug() << "  - Añadido:" << itemText;
+        if (categoriaFiltro == "Todas las categorías" || categoria == categoriaFiltro) {
+            productosPorCategoria[categoria].append(actual->dato);
         }
         actual = actual->siguiente;
     }
 
-    qDebug() << "Total productos cargados:" << productosCargados;
-    qDebug() << "Items en listWidget_3:" << ui->listWidget_3->count();
+
+    for (auto it = productosPorCategoria.begin(); it != productosPorCategoria.end(); ++it) {
+        QString categoria = it.key();
+        QList<Producto> productos = it.value();
+
+
+        QListWidgetItem* headerItem = new QListWidgetItem("--- " + categoria.toUpper() + " ---");
+        headerItem->setFlags(headerItem->flags() & ~Qt::ItemIsSelectable); // No seleccionable
+        QFont headerFont = headerItem->font();
+        headerFont.setBold(true);
+        headerItem->setFont(headerFont);
+        headerItem->setBackground(QBrush(QColor(230, 230, 230)));
+        ui->listWidget_3->addItem(headerItem);
+
+
+        for (const Producto& p : productos) {
+            QString itemText = QString("%1\n   • Marca: %2\n   • Precio: $%3\n   ")
+                                   .arg(QString::fromStdString(p.descripcion))
+                                   .arg(QString::fromStdString(p.marca))
+                                   .arg(p.precio, 0, 'f', 2)
+                                   ;
+
+            QListWidgetItem* item = new QListWidgetItem(itemText);
+            item->setData(Qt::UserRole, p.id);
+
+
+
+            if (ui->listWidget_3->count() % 2 == 0) {
+                item->setBackground(QBrush(QColor(245, 245, 245)));
+            }
+
+            ui->listWidget_3->addItem(item);
+        }
+
+
+        QListWidgetItem* separator = new QListWidgetItem();
+        separator->setFlags(Qt::NoItemFlags);
+        separator->setSizeHint(QSize(0, 10));
+        ui->listWidget_3->addItem(separator);
+    }
 }
 
 void Ventana_Productos::cargarRecomendaciones()
 {
-    qDebug() << "Cargando recomendaciones...";
-
     if (!ui->listWidget) {
-        qDebug() << "ERROR: listWidget no existe!";
         return;
     }
-
     ui->listWidget->clear();
 
     if (!usuarioActual) {
-        qDebug() << "Usuario no autenticado, no se cargan recomendaciones";
         return;
     }
 
     Recomendaciones rec = generarRecomendaciones(usuarioActual);
-    qDebug() << "Recomendaciones generadas";
 
-    // Combinar todas las recomendaciones
-    ListaProducto todas = nullptr;
-    int contadorRecomendaciones = 0;
 
-    // Función para agregar productos
-    auto agregarProductos = [&](ListaProducto lista) {
-        if (!lista) return;
+    auto agregarSeccionRecomendaciones = [&](const QString& titulo, ListaProducto lista) {
+        if (!lista) {
+            return;
+        }
 
+        // Encabezado de sección
+        QListWidgetItem* headerItem = new QListWidgetItem("★ " + titulo + " ★");
+        headerItem->setFlags(headerItem->flags() & ~Qt::ItemIsSelectable);
+        QFont headerFont = headerItem->font();
+        headerFont.setBold(true);
+        headerItem->setFont(headerFont);
+        headerItem->setBackground(QBrush(QColor(220, 240, 255)));
+        ui->listWidget->addItem(headerItem);
+
+        // Agregar productos (máximo 10)
+        int contador = 0;
         NodoProducto* actual = lista;
-        while (actual != nullptr) {
-            // Evitar duplicados
-            bool existe = false;
-            NodoProducto* temp = todas;
-            while (temp != nullptr) {
-                if (temp->dato.id == actual->dato.id) {
-                    existe = true;
-                    break;
-                }
-                temp = temp->siguiente;
-            }
+        while (actual != nullptr && contador < 10) {
+            Producto p = actual->dato;
+            QString itemText = QString("%1\n   • Marca: %2\n   • Precio: $%3\n   • Calidad: %4/5")
+                                   .arg(QString::fromStdString(p.descripcion))
+                                   .arg(QString::fromStdString(p.marca))
+                                   .arg(p.precio, 0, 'f', 2)
+                                   .arg(p.calidad);
 
-            if (!existe) {
-                insertarEnLista(todas, actual->dato);
-                contadorRecomendaciones++;
-            }
+            QListWidgetItem* item = new QListWidgetItem(itemText);
+            item->setData(Qt::UserRole, p.id);
+
+            ui->listWidget->addItem(item);
+            contador++;
             actual = actual->siguiente;
         }
+
+        // Separador
+        QListWidgetItem* separator = new QListWidgetItem();
+        separator->setFlags(Qt::NoItemFlags);
+        separator->setSizeHint(QSize(0, 15));
+        ui->listWidget->addItem(separator);
     };
 
-    agregarProductos(rec.porMarcasPreferidas);
-    agregarProductos(rec.porOtrasMarcasFrecuentes);
-    agregarProductos(rec.porCategoriaPreferida);
-    agregarProductos(rec.porCategoriaFrecuente);
-    agregarProductos(rec.porCalidad);
 
-    qDebug() << "Total recomendaciones combinadas:" << contadorRecomendaciones;
+    agregarSeccionRecomendaciones("MARCAS PREFERIDAS", rec.porMarcasPreferidas);
+    agregarSeccionRecomendaciones("OTRAS MARCAS FRECUENTES", rec.porOtrasMarcasFrecuentes);
+    agregarSeccionRecomendaciones("CATEGORÍA FRECUENTE", rec.porCategoriaFrecuente);
+    agregarSeccionRecomendaciones("CALIDAD SIMILAR", rec.porCalidad);
 
-    // Mostrar en la lista
-    NodoProducto* actual = todas;
-    int itemsAgregados = 0;
 
-    while (actual != nullptr) {
-        Producto p = actual->dato;
-        QString itemText = QString("%1 - %2 - $%3")
-                               .arg(QString::fromStdString(p.descripcion))
-                               .arg(QString::fromStdString(p.marca))
-                               .arg(p.precio);
-
-        QListWidgetItem* item = new QListWidgetItem(itemText);
-        item->setData(Qt::UserRole, p.id);
+    if (ui->listWidget->count() == 0) {
+        QListWidgetItem* item = new QListWidgetItem("No hay recomendaciones disponibles");
+        item->setFlags(item->flags() & ~Qt::ItemIsSelectable);
         ui->listWidget->addItem(item);
-
-        itemsAgregados++;
-        actual = actual->siguiente;
     }
-
-    qDebug() << "Recomendaciones mostradas:" << itemsAgregados;
-    qDebug() << "Items en listWidget:" << ui->listWidget->count();
 }
-
 
 void Ventana_Productos::mostrarDetallesProducto(int id)
 {
@@ -246,6 +260,8 @@ void Ventana_Productos::mostrarDetallesProducto(int id)
             // Registrar en el historial
             if (usuarioActual) {
                 insertarLista(usuarioActual->historial, std::to_string(id));
+
+                // Actualizar recomendaciones inmediatamente
                 cargarRecomendaciones();
             }
             break;
@@ -254,32 +270,20 @@ void Ventana_Productos::mostrarDetallesProducto(int id)
     }
 }
 
-Ventana_Productos::~Ventana_Productos()
-{
-    delete ui;
-}
-
-void Ventana_Productos::on_Volver_clicked()
-{
-    this->close();
-    MainWindow *ventanaP = new MainWindow();
-    ventanaP->show();
-}
-
 void Ventana_Productos::on_pushButton_clicked()
 {
-    // Obtener los valores de los filtros
+
     QString textoBusqueda = ui->lineEdit->text();
     QString categoria = ui->comboBox->currentText();
     QString marca = ui->comboBox_2->currentText();
     QString precioMinStr = ui->comboBox_3->currentText();
     QString precioMaxStr = ui->comboBox_4->currentText();
 
-    // Convertir precios a double
+
     double precioMin = 0.0;
     double precioMax = std::numeric_limits<double>::max();
 
-    // Extraer solo números de las cadenas de precio
+
     QRegularExpression re("(\\d+\\.?\\d*)");
     QRegularExpressionMatch matchMin = re.match(precioMinStr);
     QRegularExpressionMatch matchMax = re.match(precioMaxStr);
@@ -292,16 +296,16 @@ void Ventana_Productos::on_pushButton_clicked()
         precioMax = matchMax.captured(1).toDouble();
     }
 
-    // Validar rango de precios
+
     if (precioMin > precioMax) {
         QMessageBox::warning(this, "Error", "El precio mínimo no puede ser mayor al precio máximo");
         return;
     }
 
-    // Iniciar con todos los productos
+
     ListaProducto resultados = catalogoGlobal;
 
-    // Aplicar filtros en cascada
+
     if (!textoBusqueda.isEmpty()) {
         resultados = buscarPorDescripcion(resultados, textoBusqueda.toStdString());
     }
@@ -316,7 +320,7 @@ void Ventana_Productos::on_pushButton_clicked()
 
     resultados = buscarPorRangoPrecios(resultados, precioMin, precioMax);
 
-    // Mostrar resultados en listWidget_2
+
     ui->listWidget_2->clear();
 
     if (resultados == nullptr) {
@@ -336,5 +340,17 @@ void Ventana_Productos::on_pushButton_clicked()
         ui->listWidget_2->addItem(item);
         actual = actual->siguiente;
     }
+}
+
+Ventana_Productos::~Ventana_Productos()
+{
+    delete ui;
+}
+
+void Ventana_Productos::on_Volver_clicked()
+{
+    this->close();
+    MainWindow *ventanaP = new MainWindow();
+    ventanaP->show();
 }
 

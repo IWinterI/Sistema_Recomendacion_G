@@ -2,7 +2,7 @@
 
 #include "estructuras.h"
 
-// --- Declaraciones de Funciones de Usuario ---
+
 
 Nodoarbol* crearNodo(Usuario valor);
 Nodoarbol* insertar(Nodoarbol*& raiz, Usuario& usuario);

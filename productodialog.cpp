@@ -21,3 +21,9 @@ productodialog::~productodialog()
 {
     delete ui;
 }
+
+void productodialog::on_pushButton_clicked()
+{
+    this->close();
+}
+

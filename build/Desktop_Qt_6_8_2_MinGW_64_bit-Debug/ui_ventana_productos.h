@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
@@ -44,13 +45,14 @@ public:
     QListWidget *listWidget;
     QListWidget *listWidget_2;
     QWidget *Capa2;
-    QLabel *label_2;
     QLineEdit *lineEdit;
     QComboBox *comboBox;
     QComboBox *comboBox_2;
     QComboBox *comboBox_3;
     QPushButton *pushButton;
     QComboBox *comboBox_4;
+    QFrame *frame;
+    QLabel *label_2;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -82,7 +84,45 @@ public:
 "\n"
 "#Volver:hover{\n"
 "	\n"
-"	background-color: rgb(85, 255, 255);\n"
+"	background-color: rgb(169, 255, 242);\n"
+"}\n"
+"\n"
+"#pushButton{\n"
+"	border: 2px solid rgb(65, 195, 195);\n"
+"	border-radius:10px;\n"
+"	background-color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"#pushButton:hover{\n"
+"	background-color: rgb(169, 255, 242);\n"
+"}\n"
+"\n"
+"\n"
+"\n"
+"#frame{\n"
+"	border:1px solid #42c7c7;\n"
+"	border-radius:10px;\n"
+"	background-color: rgb(255, 255, 255);\n"
+"}\n"
+"\n"
+"#lineEdit{\n"
+"	border-top: 1px solid #42c7c7;\n"
+"	border-right: 1px solid #42c7c7;\n"
+"	border-bottom: 1px solid #42c7c7;\n"
+"}\n"
+"\n"
+"QListWidget{\n"
+"	background-c"
+                        "olor: #f8f8f8;\n"
+"}\n"
+"\n"
+"QListWidget::item { \n"
+"	border-bottom: 1px solid #e0e0e0;\n"
+"	padding: 8px; \n"
+"}\n"
+"\n"
+"QListWidget::item:selected { \n"
+"	background-color: #e0f0ff; \n"
 "}"));
         centralwidget = new QWidget(Ventana_Productos);
         centralwidget->setObjectName("centralwidget");
@@ -141,12 +181,9 @@ public:
         Capa2 = new QWidget(Capa1);
         Capa2->setObjectName("Capa2");
         Capa2->setGeometry(QRect(440, 70, 331, 141));
-        label_2 = new QLabel(Capa2);
-        label_2->setObjectName("label_2");
-        label_2->setGeometry(QRect(10, 10, 41, 16));
         lineEdit = new QLineEdit(Capa2);
         lineEdit->setObjectName("lineEdit");
-        lineEdit->setGeometry(QRect(50, 10, 113, 22));
+        lineEdit->setGeometry(QRect(70, 10, 113, 21));
         comboBox = new QComboBox(Capa2);
         comboBox->addItem(QString());
         comboBox->addItem(QString());
@@ -157,6 +194,10 @@ public:
         comboBox->addItem(QString());
         comboBox->setObjectName("comboBox");
         comboBox->setGeometry(QRect(190, 10, 111, 22));
+        QFont font1;
+        font1.setFamilies({QString::fromUtf8("Arial")});
+        font1.setBold(false);
+        comboBox->setFont(font1);
         comboBox_2 = new QComboBox(Capa2);
         comboBox_2->addItem(QString());
         comboBox_2->addItem(QString());
@@ -171,6 +212,7 @@ public:
         comboBox_2->addItem(QString());
         comboBox_2->setObjectName("comboBox_2");
         comboBox_2->setGeometry(QRect(10, 40, 100, 22));
+        comboBox_2->setFont(font1);
         comboBox_3 = new QComboBox(Capa2);
         comboBox_3->addItem(QString());
         comboBox_3->addItem(QString());
@@ -195,6 +237,9 @@ public:
         comboBox_3->addItem(QString());
         comboBox_3->setObjectName("comboBox_3");
         comboBox_3->setGeometry(QRect(120, 40, 91, 22));
+        QFont font2;
+        font2.setFamilies({QString::fromUtf8("Arial")});
+        comboBox_3->setFont(font2);
         pushButton = new QPushButton(Capa2);
         pushButton->setObjectName("pushButton");
         pushButton->setGeometry(QRect(110, 80, 91, 24));
@@ -222,6 +267,26 @@ public:
         comboBox_4->addItem(QString());
         comboBox_4->setObjectName("comboBox_4");
         comboBox_4->setGeometry(QRect(220, 40, 91, 22));
+        comboBox_4->setFont(font2);
+        frame = new QFrame(Capa2);
+        frame->setObjectName("frame");
+        frame->setGeometry(QRect(10, 10, 81, 21));
+        frame->setFrameShape(QFrame::Shape::StyledPanel);
+        frame->setFrameShadow(QFrame::Shadow::Raised);
+        label_2 = new QLabel(frame);
+        label_2->setObjectName("label_2");
+        label_2->setGeometry(QRect(10, 0, 51, 20));
+        QFont font3;
+        font3.setFamilies({QString::fromUtf8("Arial")});
+        font3.setBold(true);
+        label_2->setFont(font3);
+        frame->raise();
+        lineEdit->raise();
+        comboBox->raise();
+        comboBox_2->raise();
+        comboBox_3->raise();
+        pushButton->raise();
+        comboBox_4->raise();
         Capa2->raise();
         Carpeta->raise();
         listWidget_2->raise();
@@ -249,7 +314,6 @@ public:
         Volver->setText(QCoreApplication::translate("Ventana_Productos", "Cerrar Sesion", nullptr));
         Carpeta->setTabText(Carpeta->indexOf(Productos), QCoreApplication::translate("Ventana_Productos", "Productos", nullptr));
         Carpeta->setTabText(Carpeta->indexOf(Recomendado), QCoreApplication::translate("Ventana_Productos", "Recomendados", nullptr));
-        label_2->setText(QCoreApplication::translate("Ventana_Productos", "Buscar:", nullptr));
         comboBox->setItemText(0, QCoreApplication::translate("Ventana_Productos", "Categorias ", nullptr));
         comboBox->setItemText(1, QCoreApplication::translate("Ventana_Productos", "Ropa de mujer", nullptr));
         comboBox->setItemText(2, QCoreApplication::translate("Ventana_Productos", "Ropa de hombre", nullptr));
@@ -320,6 +384,7 @@ public:
         comboBox_4->setItemText(20, QCoreApplication::translate("Ventana_Productos", "200$", nullptr));
 
         comboBox_4->setPlaceholderText(QCoreApplication::translate("Ventana_Productos", "Precio Max", nullptr));
+        label_2->setText(QCoreApplication::translate("Ventana_Productos", "Buscar:", nullptr));
     } // retranslateUi
 
 };

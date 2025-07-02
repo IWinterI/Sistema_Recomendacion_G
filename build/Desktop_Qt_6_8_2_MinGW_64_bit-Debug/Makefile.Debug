@@ -139,8 +139,7 @@ compiler_rcc_clean:
 	-$(DEL_FILE) debug\qrc_Recursos.cpp
 debug/qrc_Recursos.cpp: ../../Recursos.qrc \
 		C:/Qt/6.8.2/mingw_64/bin/rcc.exe \
-		../../Fondo0.jpg \
-		../../Fondo1.jpg
+		../../F.png
 	C:\Qt\6.8.2\mingw_64\bin\rcc.exe -name Recursos --no-zstd ..\..\Recursos.qrc -o debug\qrc_Recursos.cpp
 
 compiler_moc_predefs_make_all: debug/moc_predefs.h
@@ -947,6 +946,8 @@ debug/moc_ventana_productos.cpp: ../../ventana_productos.h \
 		C:/Qt/6.8.2/mingw_64/include/QtCore/qlocale.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qguiapplication_platform.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qtabwidget.h \
+		../../usuario.h \
+		../../estructuras.h \
 		debug/moc_predefs.h \
 		C:/Qt/6.8.2/mingw_64/bin/moc.exe
 	C:\Qt\6.8.2\mingw_64\bin\moc.exe $(DEFINES) --include C:/Users/usuario/Documents/Sistema_Recomendacion_G/build/Desktop_Qt_6_8_2_MinGW_64_bit-Debug/debug/moc_predefs.h -IC:/Qt/6.8.2/mingw_64/mkspecs/win32-g++ -IC:/Users/usuario/Documents/Sistema_Recomendacion_G -IC:/Qt/6.8.2/mingw_64/include -IC:/Qt/6.8.2/mingw_64/include/QtWidgets -IC:/Qt/6.8.2/mingw_64/include/QtGui -IC:/Qt/6.8.2/mingw_64/include/QtCore -I. -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++ -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/x86_64-w64-mingw32 -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include/c++/backward -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include -IC:/Qt/Tools/mingw1310_64/lib/gcc/x86_64-w64-mingw32/13.1.0/include-fixed -IC:/Qt/Tools/mingw1310_64/x86_64-w64-mingw32/include ..\..\ventana_productos.h -o debug\moc_ventana_productos.cpp
@@ -1422,7 +1423,8 @@ debug/mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qtextoption.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QPushButton \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qpushbutton.h \
-		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QWidget
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QWidget \
+		../../catalogo.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\mainwindow.o ..\..\mainwindow.cpp
 
 debug/productodialog.o: ../../productodialog.cpp ../../productodialog.h \
@@ -1617,7 +1619,15 @@ debug/productodialog.o: ../../productodialog.cpp ../../productodialog.h \
 		C:/Qt/6.8.2/mingw_64/include/QtCore/qlocale.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qguiapplication_platform.h \
 		../../estructuras.h \
-		ui_productodialog.h
+		ui_productodialog.h \
+		C:/Qt/6.8.2/mingw_64/include/QtCore/QVariant \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QApplication \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qapplication.h \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QLabel \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qlabel.h \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qframe.h \
+		C:/Qt/6.8.2/mingw_64/include/QtGui/qpicture.h \
+		C:/Qt/6.8.2/mingw_64/include/QtGui/qtextdocument.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\productodialog.o ..\..\productodialog.cpp
 
 debug/recomendacion.o: ../../recomendacion.cpp ../../recomendacion.h \
@@ -1854,7 +1864,12 @@ debug/registro_usuario.o: ../../registro_usuario.cpp ../../registro_usuario.h \
 		C:/Qt/6.8.2/mingw_64/include/QtCore/QRegularExpression \
 		C:/Qt/6.8.2/mingw_64/include/QtCore/qregularexpression.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/QRegularExpressionValidator \
-		C:/Qt/6.8.2/mingw_64/include/QtGui/qvalidator.h
+		C:/Qt/6.8.2/mingw_64/include/QtGui/qvalidator.h \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QVBoxLayout \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qboxlayout.h \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qlayout.h \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qlayoutitem.h \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qgridlayout.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\registro_usuario.o ..\..\registro_usuario.cpp
 
 debug/usuario.o: ../../usuario.cpp ../../usuario.h \
@@ -2059,6 +2074,8 @@ debug/ventana_productos.o: ../../ventana_productos.cpp ../../ventana_productos.h
 		C:/Qt/6.8.2/mingw_64/include/QtCore/qlocale.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qguiapplication_platform.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qtabwidget.h \
+		../../usuario.h \
+		../../estructuras.h \
 		ui_ventana_productos.h \
 		C:/Qt/6.8.2/mingw_64/include/QtCore/QVariant \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QApplication \
@@ -2087,13 +2104,12 @@ debug/ventana_productos.o: ../../ventana_productos.cpp ../../ventana_productos.h
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qtextformat.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qpen.h \
 		C:/Qt/6.8.2/mingw_64/include/QtGui/qtextoption.h \
-		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QListView \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QListWidget \
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qlistwidget.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qlistview.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qabstractitemview.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qabstractscrollarea.h \
 		C:/Qt/6.8.2/mingw_64/include/QtCore/qitemselectionmodel.h \
-		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QListWidget \
-		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qlistwidget.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QMenuBar \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qmenubar.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qmenu.h \
@@ -2112,14 +2128,16 @@ debug/ventana_productos.o: ../../ventana_productos.cpp ../../ventana_productos.h
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qdialog.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QCheckBox \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qcheckbox.h \
-		../../usuario.h \
-		../../estructuras.h \
 		../../utilidades.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QMessageBox \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qmessagebox.h \
 		C:/Qt/6.8.2/mingw_64/include/QtWidgets/qdialogbuttonbox.h \
+		../../catalogo.h \
+		../../recomendacion.h \
 		../../productodialog.h \
-		../../recomendacion.h
+		C:/Qt/6.8.2/mingw_64/include/QtWidgets/QListWidgetItem \
+		C:/Qt/6.8.2/mingw_64/include/QtCore/QStringList \
+		C:/Qt/6.8.2/mingw_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\ventana_productos.o ..\..\ventana_productos.cpp
 
 debug/qrc_Recursos.o: debug/qrc_Recursos.cpp 
